@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz da Martha ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffeef2 0%, #fde2e9 50%, #f8e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Enfeites flutuantes suaves */
+        body::before, body::after {
+            content: '✿';
+            position: fixed;
+            font-size: 25px;
+            color: #f7c8d4;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        body::before {
+            top: 10%;
+            left: 8%;
+        }
+        body::after {
+            bottom: 12%;
+            right: 6%;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 35px 28px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(214, 51, 96, 0.12);
+            position: relative;
+            border: 2px solid #ffe6ed;
+        }
+
+        .container::before {
+            content: '🌸';
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 32px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #c94b70;
+            margin-bottom: 8px;
+            font-size: 26px;
+            letter-spacing: 0.5px;
+        }
+
+        .coracao {
+            text-align: center;
+            color: #f7a8b8;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .intro {
+            text-align: center;
+            color: #886e76;
+            margin-bottom: 30px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .question {
+            background: #fff9fb;
+            padding: 22px;
+            border-radius: 16px;
+            margin-bottom: 22px;
+            border: 1px solid #ffdce5;
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .question:hover {
+            transform: translateY(-2px);
+        }
+
+        .question h3 {
+            color: #703b4d;
+            margin-bottom: 16px;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .question h3::before {
+            content: '❀';
+            font-size: 16px;
+            color: #f7a8b8;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 13px 16px;
+            border: 1px solid #f0d9e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #5c444c;
+            font-size: 15px;
+            background: #ffffff;
+        }
+
+        .option:hover {
+            border-color: #f09eb3;
+            background: #fff2f6;
+            padding-left: 20px;
+        }
+
+        .option.selected {
+            border-color: #e87a97;
+            background: #ffeaf0;
+        }
+
+        .option.correct {
+            background: #e8f8ee;
+            border-color: #7cd4a3;
+            color: #2c6e4f;
+        }
+
+        .option.correct::before {
+            content: '✓ ';
+            font-weight: bold;
+        }
+
+        .option.incorrect {
+            background: #ffe9ec;
+            border-color: #f29aa8;
+            color: #923f4e;
+        }
+
+        .option.incorrect::before {
+            content: '✗ ';
+            font-weight: bold;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #e87a97 0%, #d65a78 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(214, 90, 120, 0.25);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(214, 90, 120, 0.35);
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            display: none;
+            background: #fef8fa;
+            border: 2px solid #f8d9e2;
+        }
+
+        .result.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score {
+            font-size: 28px;
+            font-weight: bold;
+            color: #d65a78;
+            margin-bottom: 10px;
+        }
+
+        .score span {
+            font-size: 18px;
+            color: #e87a97;
+        }
+
+        #mensagem {
+            color: #7a5662;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .btn-reiniciar {
+            background: linear-gradient(135deg, #7cd4a3 0%, #57b884 100%);
+            box-shadow: 0 4px 12px rgba(87, 184, 132, 0.25);
+            margin-top: 18px;
+        }
+
+        .btn-reiniciar:hover {
+            box-shadow: 0 6px 16px rgba(87, 184, 132, 0.35);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz da Martha</h1>
+        <p class="coracao">✧ ♡ ✧</p>
+        <p class="intro">Responda com carinho e veja o quanto você conhece ela! 🌷</p>
+
+        <!-- Pergunta 1: Idade -->
+        <div class="question" id="q1">
+            <h3>Quantos anos tem a Martha?</h3>
+            <div class="options">
+                <div class="option" data-q="q1" data-correct="false">15 anos</div>
+                <div class="option" data-q="q1" data-correct="true">17 anos</div>
+                <div class="option" data-q="q1" data-correct="false">16 anos</div>
+                <div class="option" data-q="q1" data-correct="false">18 anos</div>
+            </div>
+        </div>
+
+        <!-- Pergunta 2: Onde vive -->
+        <div class="question" id="q2">
+            <h3>Onde a Martha vive?</h3>
+            <div class="options">
+                <div class="option" data-q="q2" data-correct="false">Intaka 1</div>
+                <div class="option" data-q="q2" data-correct="true">Intaka 2</div>
+                <div class="option" data-q="q2" data-correct="false">Matola</div>
+                <div class="option" data-q="q2" data-correct="false">Polana</div>
+            </div>
+        </div>
+
+        <!-- Pergunta 3: Onde estuda -->
+        <div class="question" id="q3">
+            <h3>Onde a Martha estuda?</h3>
+            <div class="options">
+                <div class="option" data-q="q3" data-correct="false">Escola Secundária de KaMavota</div>
+                <div class="option" data-q="q3" data-correct="true">Intaka 2</div>
+                <div class="option" data-q="q3" data-correct="false">Escola Josina Machel</div>
+                <div class="option" data-q="q3" data-correct="false">Colégio Atlântico</div>
+            </div>
+        </div>
+
+        <button onclick="verificarRespostas()">✿ Ver Resultado</button>
+
+        <div class="result" id="resultado">
+            <div class="score" id="pontuacao"></div>
+            <p id="mensagem"></p>
+            <button class="btn-reiniciar" onclick="reiniciarQuiz()">🔄 Tentar Novamente</button>
+        </div>
+    </div>
+
+    <script>
+        let acertos = 0;
+        let respondido = false;
+
+        document.querySelectorAll('.option').forEach(opcao => {
+            opcao.addEventListener('click', function() {
+                if (respondido) return;
+                const questao = this.getAttribute('data-q');
+                document.querySelectorAll(`[data-q="${questao}"]`).forEach(el => el.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        function verificarRespostas() {
+            if (respondido) return;
+            respondido = true;
+            acertos = 0;
+
+            document.querySelectorAll('.option').forEach(opcao => {
+                const correto = opcao.getAttribute('data-correct') === 'true';
+                opcao.classList.add('disabled');
+                
+                if (correto) opcao.classList.add('correct');
+                else if (opcao.classList.contains('selected')) opcao.classList.add('incorrect');
+
+                if (opcao.classList.contains('selected') && correto) acertos++;
+            });
+
+            const total = 3;
+            document.getElementById('pontuacao').innerHTML = `${acertos}/${total}<span> acertos</span>`;
+            
+            let msg = '';
+            if (acertos === 3) {
+                msg = '🎉 Perfeito! Você conhece a Martha muito bem! <!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz da Martha ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffeef2 0%, #fde2e9 50%, #f8e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Enfeites flutuantes suaves */
+        body::before, body::after {
+            content: '✿';
+            position: fixed;
+            font-size: 25px;
+            color: #f7c8d4;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        body::before {
+            top: 10%;
+            left: 8%;
+        }
+        body::after {
+            bottom: 12%;
+            right: 6%;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 35px 28px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(214, 51, 96, 0.12);
+            position: relative;
+            border: 2px solid #ffe6ed;
+        }
+
+        .container::before {
+            content: '🌸';
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 32px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #c94b70;
+            margin-bottom: 8px;
+            font-size: 26px;
+            letter-spacing: 0.5px;
+        }
+
+        .coracao {
+            text-align: center;
+            color: #f7a8b8;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .intro {
+            text-align: center;
+            color: #886e76;
+            margin-bottom: 30px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .question {
+            background: #fff9fb;
+            padding: 22px;
+            border-radius: 16px;
+            margin-bottom: 22px;
+            border: 1px solid #ffdce5;
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .question:hover {
+            transform: translateY(-2px);
+        }
+
+        .question h3 {
+            color: #703b4d;
+            margin-bottom: 16px;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .question h3::before {
+            content: '❀';
+            font-size: 16px;
+            color: #f7a8b8;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 13px 16px;
+            border: 1px solid #f0d9e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #5c444c;
+            font-size: 15px;
+            background: #ffffff;
+        }
+
+        .option:hover {
+            border-color: #f09eb3;
+            background: #fff2f6;
+            padding-left: 20px;
+        }
+
+        .option.selected {
+            border-color: #e87a97;
+            background: #ffeaf0;
+        }
+
+        .option.correct {
+            background: #e8f8ee;
+            border-color: #7cd4a3;
+            color: #2c6e4f;
+        }
+
+        .option.correct::before {
+            content: '✓ ';
+            font-weight: bold;
+        }
+
+        .option.incorrect {
+            background: #ffe9ec;
+            border-color: #f29aa8;
+            color: #923f4e;
+        }
+
+        .option.incorrect::before {
+            content: '✗ ';
+            font-weight: bold;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #e87a97 0%, #d65a78 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(214, 90, 120, 0.25);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(214, 90, 120, 0.35);
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            display: none;
+            background: #fef8fa;
+            border: 2px solid #f8d9e2;
+        }
+
+        .result.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score {
+            font-size: 28px;
+            font-weight: bold;
+            color: #d65a78;
+            margin-bottom: 10px;
+        }
+
+        .score span {
+            font-size: 18px;
+            color: #e87a97;
+        }
+
+        #mensagem {
+            color: #7a5662;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .btn-reiniciar {
+            background: linear-gradient(135deg, #7cd4a3 0%, #57b884 100%);
+            box-shadow: 0 4px 12px rgba(87, 184, 132, 0.25);
+            margin-top: 18px;
+        }
+
+        .btn-reiniciar:hover {
+            box-shadow: 0 6px 16px rgba(87, 184, 132, 0.35);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz da Martha</h1>
+        <p class="coracao">✧ ♡ ✧</p>
+        <p class="intro">Responda com carinho e veja o quanto você conhece ela! 🌷</p>
+
+        <!-- Pergunta 1: Idade -->
+        <div class="question" id="q1">
+            <h3>Quantos anos tem a Martha?</h3>
+            <div class="options">
+                <div class="option" data-q="q1" data-correct="false">15 anos</div>
+                <div class="option" data-q="q1" data-correct="true">17 anos</div>
+                <div class="option" data-q="q1" data-correct="false">16 anos</div>
+                <div class="option" data-q="q1" data-correct="false">18 anos</div>
+            </div>
+        </div>
+
+        <!-- Pergunta 2: Onde vive -->
+        <div class="question" id="q2">
+            <h3>Onde a Martha vive?</h3>
+            <div class="options">
+                <div class="option" data-q="q2" data-correct="false">Intaka 1</div>
+                <div class="option" data-q="q2" data-correct="true">Intaka 2</div>
+                <div class="option" data-q="q2" data-correct="false">Matola</div>
+                <div class="option" data-q="q2" data-correct="false">Polana</div>
+            </div>
+        </div>
+
+        <!-- Pergunta 3: Onde estuda -->
+        <div class="question" id="q3">
+            <h3>Onde a Martha estuda?</h3>
+            <div class="options">
+                <div class="option" data-q="q3" data-correct="false">Escola Secundária de KaMavota</div>
+                <div class="option" data-q="q3" data-correct="true">Intaka 2</div>
+                <div class="option" data-q="q3" data-correct="false">Escola Josina Machel</div>
+                <div class="option" data-q="q3" data-correct="false">Colégio Atlântico</div>
+            </div>
+        </div>
+
+        <button onclick="verificarRespostas()">✿ Ver Resultado</button>
+
+        <div class="result" id="resultado">
+            <div class="score" id="pontuacao"></div>
+            <p id="mensagem"></p>
+            <button class="btn-reiniciar" onclick="reiniciarQuiz()">🔄 Tentar Novamente</button>
+        </div>
+    </div>
+
+    <script>
+        let acertos = 0;
+        let respondido = false;
+
+        document.querySelectorAll('.option').forEach(opcao => {
+            opcao.addEventListener('click', function() {
+                if (respondido) return;
+                const questao = this.getAttribute('data-q');
+                document.querySelectorAll(`[data-q="${questao}"]`).forEach(el => el.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        function verificarRespostas() {
+            if (respondido) return;
+            respondido = true;
+            acertos = 0;
+
+            document.querySelectorAll('.option').forEach(opcao => {
+                const correto = opcao.getAttribute('data-correct') === 'true';
+                opcao.classList.add('disabled');
+                
+                if (correto) opcao.classList.add('correct');
+                else if (opcao.classList.contains('selected')) opcao.classList.add('incorrect');
+
+                if (opcao.classList.contains('selected') && correto) acertos++;
+            });
+
+            const total = 3;
+            document.getElementById('pontuacao').innerHTML = `${acertos}/${total}<span> acertos</span>`;
+            
+            let msg = '';
+            if (acertos === 3) {
+                msg = '🎉 Perfeito! Você conhece a Martha muito bem! Parabéns, você é especial para ela! 💖';
+            } else if (acertos === 2) {
+                msg = '😊 Muito bem! Só precisava de um detalhe a mais! Continue tentando! ✨';
+            } else if (acertos === 1) {
+                msg = '🌷 Vai lá, pergunte mais sobre ela — você vai conseguir melhorar! 🍃';
+            } else {
+                msg = '💫 Não se preocupe, tente de novo! Cada tentativa é um passo mais perto! 🌸';
+            }
+
+            document.getElementById('mensagem').textContent = msg;
+            document.getElementById('resultado').classList.add('show');
+        }
+
+        function reiniciarQuiz() {
+            respondido = false;
+            acertos = 0;
+            document.querySelectorAll('.option').forEach(opcao => {
+                opcao.classList.<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz da Martha ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffeef2 0%, #fde2e9 50%, #f8e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Enfeites flutuantes suaves */
+        body::before, body::after {
+            content: '✿';
+            position: fixed;
+            font-size: 25px;
+            color: #f7c8d4;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        body::before {
+            top: 10%;
+            left: 8%;
+        }
+        body::after {
+            bottom: 12%;
+            right: 6%;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 35px 28px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(214, 51, 96, 0.12);
+            position: relative;
+            border: 2px solid #ffe6ed;
+        }
+
+        .container::before {
+            content: '🌸';
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 32px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #c94b70;
+            margin-bottom: 8px;
+            font-size: 26px;
+            letter-spacing: 0.5px;
+        }
+
+        .coracao {
+            text-align: center;
+            color: #f7a8b8;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .intro {
+            text-align: center;
+            color: #886e76;
+            margin-bottom: 30px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .question {
+            background: #fff9fb;
+            padding: 22px;
+            border-radius: 16px;
+            margin-bottom: 22px;
+            border: 1px solid #ffdce5;
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .question:hover {
+            transform: translateY(-2px);
+        }
+
+        .question h3 {
+            color: #703b4d;
+            margin-bottom: 16px;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .question h3::before {
+            content: '❀';
+            font-size: 16px;
+            color: #f7a8b8;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 13px 16px;
+            border: 1px solid #f0d9e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #5c444c;
+            font-size: 15px;
+            background: #ffffff;
+        }
+
+        .option:hover {
+            border-color: #f09eb3;
+            background: #fff2f6;
+            padding-left: 20px;
+        }
+
+        .option.selected {
+            border-color: #e87a97;
+            background: #ffeaf0;
+        }
+
+        .option.correct {
+            background: #e8f8ee;
+            border-color: #7cd4a3;
+            color: #2c6e4f;
+        }
+
+        .option.correct::before {
+            content: '✓ ';
+            font-weight: bold;
+        }
+
+        .option.incorrect {
+            background: #ffe9ec;
+            border-color: #f29aa8;
+            color: #923f4e;
+        }
+
+        .option.incorrect::before {
+            content: '✗ ';
+            font-weight: bold;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #e87a97 0%, #d65a78 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(214, 90, 120, 0.25);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(214, 90, 120, 0.35);
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            display: none;
+            background: #fef8fa;
+            border: 2px solid #f8d9e2;
+        }
+
+        .result.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score {
+            font-size: 28px;
+            font-weight: bold;
+            color: #d65a78;
+            margin-bottom: 10px;
+        }
+
+        .score span {
+            font-size: 18px;
+            color: #e87a97;
+        }
+
+        #mensagem {
+            color: #7a5662;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .btn-reiniciar {
+            background: linear-gradient(135deg, #7cd4a3 0%, #57b884 100%);
+            box-shadow: 0 4px 12px rgba(87, 184, 132, 0.25);
+            margin-top: 18px;
+        }
+
+        .btn-reiniciar:hover {
+            box-shadow: 0 6px 16px rgba(87, 184, 132, 0.35);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz da Martha</h1>
+        <p class="coracao">✧ ♡ ✧</p>
+        <p class="intro">Responda com carinho e veja o quanto você conhece ela! 🌷</p>
+
+        <!-- Pergunta 1: Idade -->
+        <div class="question" id="q1">
+            <h3>Quantos anos tem a Martha?</h3>
+            <div class="options">
+                <div class="option" data-q="q1" data-correct="false">15 anos</div>
+                <div class="option" data-q="q1" data-correct="true">17 anos</div>
+                <div class="option" data-q="q1" data-correct="false">16 anos</div>
+                <div class="option" data-q="q1" data-correct="false">18 anos</div>
+            </div>
+        </div>
+
+        <!-- Pergunta 2: Onde vive -->
+        <div class="question" id="q2">
+            <h3>Onde a Martha vive?</h3>
+            <div class="options">
+                <div class="option" data-q="q2" data-correct="false">Intaka 1</div>
+                <div class="option" data-q="q2" data-correct="true">Intaka 2</div>
+                <div class="option" data-q="q2" data-correct="false">Matola</div>
+                <div class="option" data-q="q2" data-correct="false">Polana</div>
+            </div>
+        </div>
+
+        <!-- Pergunta 3: Onde estuda -->
+        <div class="question" id="q3">
+            <h3>Onde a Martha estuda?</h3>
+            <div class="options">
+                <div class="option" data-q="q3" data-correct="false">Escola Secundária de KaMavota</div>
+                <div class="option" data-q="q3" data-correct="true">Intaka 2</div>
+                <div class="option" data-q="q3" data-correct="false">Escola Josina Machel</div>
+                <div class="option" data-q="q3" data-correct="false">Colégio Atlântico</div>
+            </div>
+        </div>
+
+        <button onclick="verificarRespostas()">✿ Ver Resultado</button>
+
+        <div class="result" id="resultado">
+            <div class="score" id="pontuacao"></div>
+            <p id="mensagem"></p>
+            <button class="btn-reiniciar" onclick="reiniciarQuiz()">🔄 Tentar Novamente</button>
+        </div>
+    </div>
+
+    <script>
+        let acertos = 0;
+        let respondido = false;
+
+        document.querySelectorAll('.option').forEach(opcao => {
+            opcao.addEventListener('click', function() {
+                if (respondido) return;
+                const questao = this.getAttribute('data-q');
+                document.querySelectorAll(`[data-q="${questao}"]`).forEach(el => el.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        function verificarRespostas() {
+            if (respondido) return;
+            respondido = true;
+            acertos = 0;
+
+            document.querySelectorAll('.option').forEach(opcao => {
+                const correto = opcao.getAttribute('data-correct') === 'true';
+                opcao.classList.add('disabled');
+                
+                if (correto) opcao.classList.add('correct');
+                else if (opcao.classList.contains('selected')) opcao.classList.add('incorrect');
+
+                if (opcao.classList.contains('selected') && correto) acertos++;
+            });
+
+            const total = 3;
+            document.getElementById('pontuacao').innerHTML = `${acertos}/${total}<span> acertos</span>`;
+            
+            let msg = '';
+            if (acertos === 3) {
+                msg = '🎉 Perfeito! Você conhece a Martha muito bem! Parabéns, você é especial para ela! 💖';
+            } else if (acertos === 2) {
+                msg = '😊 Muito bem! Só precisava de um detalhe a mais! Continue tentando! ✨';
+            } else if (acertos === 1) {
+                msg = '🌷 Vai lá, pergunte mais sobre ela — você vai conseguir melhorar! 🍃';
+            } else {
+                msg = '💫 Não se preocupe, tente de novo! Cada tentativa é um passo mais perto! 🌸';
+            }
+
+            document.getElementById('mensagem').textContent = msg;
+            document.getElementById('resultado').classList.add('show');
+        }
+
+        function reiniciarQuiz() {
+            respondido = false;
+            acertos = 0;
+            document.querySelectorAll('.option').forEach(opcao => {
+                opcao.classList.remove('correct', 'incorrect', 'selected', 'disabled');
+            });
+            document.getElementById('resultado').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
+('correct', 'incorrect', 'selected', 'disabled');
+            });
+            document.getElementById('resultado').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
+, você é especial para ela! 💖';
+            } else if (acertos === 2) {
+                msg = '😊 Muito bem! Só precisava de um detalhe a mais! Continue tentando! ✨';
+            } else if (acertos === 1) {
+                msg = '🌷 Vai lá, pergunte mais sobre ela — você vai conseguir melhorar! 🍃';
+            } else {
+                msg = '💫 Não se preocupe, tente de novo! Cada tentativa é um passo mais perto! 🌸';
+            }
+
+            document.getElementById('mensagem').textContent = msg;
+            document.getElementById('resultado').classList.add('show');
+        }
+
+        function reiniciarQuiz() {
+            respondido = false;
+            acertos = 0;
+            document.querySelectorAll('.option').forEach(opcao => {
+                opcao.classList.remove('correct', 'incorrect', 'selected', 'disabled');
+            });
+            document.getElementById('resultado').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
